@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Estimating extinction dates from sighting records</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Estimating extinction dates from sighting
+records</h1>
+
+
+
+<div id="abstract" class="section level2">
+<h2>Abstract</h2>
+<p>When a species has not been reliably sighted for a long time, two
+questions follow: is it still extant, and if not, when did it most
+likely disappear. Both questions can be addressed from the sighting
+record alone, without additional biological data, if a null model of the
+sighting process is assumed. This vignette summarizes the seven
+estimators implemented in EDE, applies them to a single worked example,
+and discusses where and why they disagree.</p>
+</div>
+<div id="the-problem" class="section level2">
+<h2>The problem</h2>
+<p>A sighting record is a sequence of confirmed observations of a
+species over time, typically sparse and irregular. Extinction is rarely
+directly observed; what is observed is the absence of further sightings
+after some last confirmed date. Two related problems arise from this
+kind of record:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Persistence testing.</strong> Given a candidate year, is the
+absence of sightings since the last confirmed one statistically
+surprising under the assumption that the species is still present and
+being observed at its historical rate? If so, persistence is
+rejected.</li>
+<li><strong>Point and interval estimation.</strong> Rather than testing
+a single candidate year, estimate the most likely extinction date
+directly, with a measure of uncertainty when possible.</li>
+</ol>
+<p>The estimators below differ in which of these two problems they
+solve, and in what they assume about the process that generates
+sightings.</p>
+</div>
+<div id="the-estimators" class="section level2">
+<h2>The estimators</h2>
+<p><strong>Robson &amp; Whitlock (1964).</strong> Extrapolates from the
+gap between the two most recent sightings, scaled by
+<code>(1 - alpha) / alpha</code>. Assumes the sighting process behaves,
+near the true endpoint, like a uniform record process. No confidence
+interval; a single point estimate.</p>
+<p><strong>Strauss &amp; Sadler (1989).</strong> A classical confidence
+bound on the true endpoint of a temporal range, given only the first and
+last sighting and the number of sightings in between, under a
+uniform-occurrence model within the range. Was developed for
+stratigraphic ranges and applies directly to sighting ranges. Fast, but
+uses only three summary numbers from the record and ignores its internal
+spacing.</p>
+<p><strong>Roberts &amp; Solow (2003), <code>ole()</code>.</strong> The
+best linear unbiased estimator under a Weibull-type record-value model
+fit to the spacing of the largest sighting times. Uses every recorded
+sighting time, not just the extremes, and returns both a point estimate
+and a confidence interval. Requires at least three sightings with a
+positive count.</p>
+<p><strong>Solow (1993).</strong> A nonparametric persistence test.
+Under a homogeneous Poisson sighting process, the ratio of “time since
+last sighting” to “total observation window” has a known null
+distribution; raising it to the power of the total sighting count gives
+the chance of persistence at a candidate year. Simple, and does not
+require knowing when in the window each sighting occurred beyond the
+last one, but treats sighting effort as constant over time.</p>
+<p><strong>Solow (1993b).</strong> A persistence test specifically
+designed for declining populations. Assumes sightings follow a
+non-stationary Poisson process with an exponentially decreasing rate
+function, using Fisher’s gap distribution to test whether recent absence
+reflects extinction or population decline.</p>
+<p><strong>Solow (2005).</strong> The same logic as Solow (1993), but
+the observation window is weighted by cumulative sighting effort
+(sighting count times time since the first sighting) instead of raw
+elapsed time. This matters when sighting effort was not constant: a
+record with many early sightings and very few late ones is not equally
+informative per year throughout.</p>
+<p><strong>Burgman, Grimson &amp; Ferson (1995).</strong> A
+combinatorial persistence test. If sightings were placed uniformly at
+random across the candidate window, what is the probability that the
+largest observed gap between sightings would not exceed the gap actually
+seen. Computed via an inclusion-exclusion argument over Stirling numbers
+of the second kind. Makes no distributional assumption beyond uniform
+placement, at the cost of being the most computationally expensive of
+the seven.</p>
+<p><code>solow1993()</code>, <code>solow1993b()</code>,
+<code>solow2005()</code>, and <code>burgman1995()</code> all return
+either the first candidate year at which the chance of persistence drops
+to or below <code>alpha</code>, or, with <code>data_out = TRUE</code>,
+the full curve of chance against candidate year.</p>
+</div>
+<div id="a-worked-example" class="section level2">
+<h2>A worked example</h2>
+<p>The dataset below is illustrative, built to resemble a typical
+sighting record for a rare, possibly extinct species: frequent early
+sightings, increasingly sparse later ones, and a long silence after the
+last confirmed observation.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(EDE)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1900</span>, <span class="dv">1902</span>, <span class="dv">1903</span>, <span class="dv">1905</span>, <span class="dv">1907</span>, <span class="dv">1908</span>, <span class="dv">1910</span>, <span class="dv">1912</span>, <span class="dv">1915</span>, <span class="dv">1918</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>           <span class="dv">1920</span>, <span class="dv">1923</span>, <span class="dv">1925</span>, <span class="dv">1928</span>, <span class="dv">1930</span>, <span class="dv">1933</span>, <span class="dv">1936</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>sightings <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="fu">sighting_data</span>(<span class="fu">data.frame</span>(<span class="at">year =</span> years, <span class="at">sightings =</span> sightings))</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>sd</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt;    time count</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; 1  1900     4</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt; 2  1902     3</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; 3  1903     5</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; 4  1905     2</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; 5  1907     3</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; 6  1908     4</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; 7  1910     2</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; 8  1912     1</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt; 9  1915     2</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co">#&gt; 10 1918     1</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co">#&gt; 11 1920     1</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="co">#&gt; 12 1923     2</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co">#&gt; 13 1925     1</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="co">#&gt; 14 1928     1</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="co">#&gt; 15 1930     1</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co">#&gt; 16 1933     1</span></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="co">#&gt; 17 1936     1</span></span></code></pre></div>
+<p>The last confirmed sighting is 1936. Sighting frequency was already
+declining well before that: the median gap between sightings is 2 years
+up to 1915, and grows to 3 years afterward.</p>
+<div id="running-all-seven-estimators" class="section level3">
+<h3>Running all seven estimators</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">ole</span>(sd)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; &lt;OLE (Roberts &amp; Solow 2003)&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;   estimate: 1944.02</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;   95% CI: [1937.48, 1956.75]</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">robson1964</span>(sd)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; &lt;Robson &amp; Whitlock (1964)&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;   estimate: 1993</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="fu">strauss1989</span>(sd)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; &lt;Strauss &amp; Sadler (1989)&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;   estimate: 1943.41</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;   95% CI: [1936, 1943.41]</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">solow1993</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; &lt;Solow (1993)&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;   estimate: 1940</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="fu">solow1993b</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; Warning: chance of persistence never falls to alpha before `test_year`;</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; returning NA.</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; &lt;Solow (1993b)&gt;</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt;   estimate: NA</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="fu">solow2005</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; Warning: chance of persistence never falls to alpha before `test_year`;</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; returning NA.</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; &lt;Solow (2005)&gt;</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt;   estimate: NA</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="fu">burgman1995</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; &lt;Burgman, Grimson &amp; Ferson (1995)&gt;</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt;   estimate: 1944</span></span></code></pre></div>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Estimate</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Robson &amp; Whitlock (1964)</td>
+<td>1993</td>
+<td>extrapolates only from the last two sightings (1933, 1936); with a
+3-year gap and alpha = 0.05, extrapolates 57 years forward</td>
+</tr>
+<tr class="even">
+<td>Strauss &amp; Sadler (1989)</td>
+<td>1943.4, CI [1936.0, 1943.4]</td>
+<td>uses only the range (1900-1936) and the sighting count</td>
+</tr>
+<tr class="odd">
+<td>Roberts &amp; Solow (2003)</td>
+<td>1944.0, CI [1937.5, 1956.8]</td>
+<td>uses the full spacing of all 17 sighting times</td>
+</tr>
+<tr class="even">
+<td>Solow (1993)</td>
+<td>1940</td>
+<td>first year the persistence chance drops below 0.05, weighting the
+window by elapsed time</td>
+</tr>
+<tr class="odd">
+<td>Solow (1993b)</td>
+<td>not rejected by 2000</td>
+<td>test for declining populations; chance flattens around 0.21</td>
+</tr>
+<tr class="even">
+<td>Solow (2005)</td>
+<td>not rejected by 2000</td>
+<td>same test, weighted by sighting effort instead</td>
+</tr>
+<tr class="odd">
+<td>Burgman, Grimson &amp; Ferson (1995)</td>
+<td>1944</td>
+<td>first year the gap-occupancy chance drops below 0.05, on a
+decreasing run</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="why-solow-1993-and-solow-2005-disagree" class="section level3">
+<h3>Why Solow (1993) and Solow (2005) disagree</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>curve_1993 <span class="ot">&lt;-</span> <span class="fu">solow1993</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>, <span class="at">data_out =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>curve_2005 <span class="ot">&lt;-</span> <span class="fu">solow2005</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>, <span class="at">data_out =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">plot</span>(curve_1993<span class="sc">$</span>time, curve_1993<span class="sc">$</span>chance, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">xlab =</span> <span class="st">&quot;candidate extinction year&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;chance of persistence&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="fu">lines</span>(curve_2005<span class="sc">$</span>time, curve_2005<span class="sc">$</span>chance, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;firebrick&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">0.05</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;grey50&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Solow (1993)&quot;</span>, <span class="st">&quot;Solow (2005)&quot;</span>, <span class="st">&quot;alpha = 0.05&quot;</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;steelblue&quot;</span>, <span class="st">&quot;firebrick&quot;</span>, <span class="st">&quot;grey50&quot;</span>), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>), <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Solow (1993) treats every year of the observation window as equally
+informative, so the chance of persistence decays steadily as the silence
+after 1936 lengthens, crossing 0.05 in 1940. Solow (2005) instead
+weights each year by how much sighting effort it represents, inferred
+from the sighting record itself. Because sightings were already sparse
+well before 1936, the model attributes less evidential weight to the
+recent silence, and the chance of persistence flattens out around 0.21
+instead of continuing to zero. Neither curve is wrong; they encode
+different assumptions about whether the observation process was
+stationary. A record with a long history of <em>consistently
+frequent</em> sightings up to the last one would show the two curves
+converge, since sighting effort would look roughly constant
+throughout.</p>
+</div>
+<div id="why-robson-whitlock-1964-gives-such-a-late-estimate-here" class="section level3">
+<h3>Why Robson &amp; Whitlock (1964) gives such a late estimate
+here</h3>
+<p>Robson &amp; Whitlock only look at the two most recent sighting
+times, 1933 and 1936. A 3-year gap scaled by
+<code>(1 - 0.05) / 0.05 = 19</code> places the estimate at
+<code>1936 + 3 * 19 = 1993</code>. This estimator is sensitive to the
+specific spacing of the last two observations, and can be pulled far in
+either direction by a single unusually short or long final gap. It is
+best read alongside an estimator like <code>ole()</code> that draws on
+the entire sighting history rather than just the last interval.</p>
+</div>
+</div>
+<div id="choosing-among-the-estimators" class="section level2">
+<h2>Choosing among the estimators</h2>
+<p>There is no single correct estimator for every record. As a starting
+point:</p>
+<ul>
+<li>If the record is long and reasonably well sampled throughout,
+<code>ole()</code> gives a point estimate with an interval and uses the
+most information.</li>
+<li>If sighting effort clearly declined over time, prefer
+<code>solow1993b()</code> or <code>solow2005()</code> over
+<code>solow1993()</code>; both answer “is persistence still plausible”,
+not “when did extinction occur”.</li>
+<li>If only the endpoints and total count are available,
+<code>strauss1989()</code> is the minimal-assumption option.</li>
+<li><code>robson1964()</code> is cheap to compute but rests entirely on
+the last interval; treat it as a sanity check, not a primary
+estimate.</li>
+<li><code>burgman1995()</code> makes the weakest distributional
+assumption but is the slowest, since it evaluates an inclusion-exclusion
+sum for every candidate year.</li>
+</ul>
+<p>In practice, running more than one estimator and checking whether
+they agree is informative in itself: sharp disagreement, as in the Solow
+comparison above, usually points to a specific feature of the record
+(here, declining sighting effort) rather than to a flaw in either
+method.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Burgman, M. A., Grimson, R. C., &amp; Ferson, S. (1995). Inferring
+threat from scientific collections. <em>Conservation Biology</em>, 9(4),
+923-928.</p>
+<p>Roberts, D. L., &amp; Solow, A. R. (2003). Flightless birds: When did
+the dodo become extinct? <em>Nature</em>, 426(6964), 245.</p>
+<p>Robson, D. S., &amp; Whitlock, J. H. (1964). Estimation of a
+truncation point. <em>Biometrika</em>, 51(1/2), 33-39.</p>
+<p>Solow, A. R. (1993). Inferring extinction from sighting data.
+<em>Ecology</em>, 74(3), 962-964.</p>
+<p>Solow, A. R. (1993b). Inferring extinction in a declining population.
+<em>Journal of Mathematical Biology</em>, 32(1), 79-82.</p>
+<p>Solow, A. R. (2005). Inferring extinction from a sighting record.
+<em>Mathematical Biosciences</em>, 195(1), 47-55.</p>
+<p>Strauss, D., &amp; Sadler, P. M. (1989). Classical confidence
+intervals and Bayesian probability estimates for ends of local taxon
+ranges. <em>Mathematical Geology</em>, 21(4), 411-427.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
