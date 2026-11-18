@@ -26,9 +26,12 @@ jaric2010(sd, test_year = 2000)
 
 ## -----------------------------------------------------------------------------
 curve <- jaric2010(sd, test_year = 2000, data_out = TRUE)
-plot(curve$time, curve$chance, type = "l",
+plot(curve$time, curve$p_value, type = "l",
      xlab = "candidate time", ylab = "index")
 abline(h = 0.05, lty = 2)
+
+## -----------------------------------------------------------------------------
+hall_wang1999(sd, k = 8)
 
 ## -----------------------------------------------------------------------------
 solow1993_bayes(sd, test_year = 2000, prior = 0.5)
@@ -49,5 +52,9 @@ fox <- sighting_data(data.frame(year = c(2001, 2003, 2005, 2006), count = 1))
 caley_barry2014(fox, test_year = 2012)
 
 ## -----------------------------------------------------------------------------
-ede_compare(sighting_data(monk_seal), test_year = 2050)
+cmp <- ede_compare(sighting_data(monk_seal), test_year = 2050)
+cmp
+
+## ----fig.height = 4.5---------------------------------------------------------
+plot(cmp)
 

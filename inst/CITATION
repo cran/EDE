@@ -1,0 +1,18 @@
+year <- format(Sys.Date(), "%Y")
+vers <- paste("R package version", meta$Version)
+
+bibentry(
+  "Manual",
+  title = "{EDE}: Extinction Date Estimation from Sighting Records",
+  author = c(
+    person("Rodrigo Fonseca", "Villa",
+           comment = c(ORCID = "0009-0005-2938-2270"))
+  ),
+  year = year,
+  note = vers,
+  url = "https://CRAN.R-project.org/package=EDE",
+  textVersion = paste0(
+    "Villa, R. F. (", year, "). EDE: Extinction Date Estimation from ",
+    "Sighting Records. ", vers, ". https://CRAN.R-project.org/package=EDE"
+  )
+)

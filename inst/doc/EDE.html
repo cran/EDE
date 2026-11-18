@@ -48,6 +48,7 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -351,8 +352,9 @@ that the species is extant; the Bayesian models later in this vignette
 give those. Their source papers define no point estimate, so EDE reports
 the one-sided upper confidence bound obtained by inverting each
 test.</p>
-<p>The column containing these p-values is currently named
-<code>chance</code> for compatibility with EDE 0.1.0.</p>
+<p>The p-value curves returned with <code>data_out = TRUE</code> have a
+column <code>p_value</code> (the former name, <code>chance</code>, is a
+deprecated alias).</p>
 </div>
 <div id="input-and-observation-origin" class="section level2">
 <h2>Input and observation origin</h2>
@@ -443,14 +445,39 @@ distinct sightings; its bound coincides with that of
 <li><code>jaric2010()</code> uses the average interval and can adjust it
 for a trend in consecutive interval lengths. It is an index rather than
 a formal test.</li>
+<li><code>mccarthy1998()</code> is the Solow (1993a) test with the time
+axis replaced by cumulative sighting effort, for records in which effort
+changed over time; the effort is supplied by the user, one value per
+time unit.</li>
 </ul>
 <p>The full p-value curve is available with
 <code>data_out = TRUE</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>curve <span class="ot">&lt;-</span> <span class="fu">jaric2010</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>, <span class="at">data_out =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">plot</span>(curve<span class="sc">$</span>time, curve<span class="sc">$</span>chance, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">plot</span>(curve<span class="sc">$</span>time, curve<span class="sc">$</span>p_value, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;candidate time&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;index&quot;</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">0.05</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAAb1BMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6AGY6Ojo6OpA6ZmY6kNtmAABmADpmOpBmtrZmtttmtv+QOgCQOmaQZgCQkGaQ2/+2ZgC2tv+225C2/7a2///bkDrb2//b/7bb////tmb/25D//7b//9v////3LCvfAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAPw0lEQVR4nO3dDVvqyB2H4ah4ti20W20r7ZpWxHz/z1gmCRBAkHn5J7+ZPPd17R71hEnkPIYkaqZqAGHV1BsA3EKgkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkJY40Aq4i0Wg29XTR8LhMGNGgf7leZluOMyYUaDLpq4WqYbDjJkF2jSb6kajBIq7GAbatI0+vkcPhxmzDTTNcJgxAoU0k0DHHw6lIlBIsw605iQJMUbeg97+DhbV4pzUSzyB4hyBQppRoF+v3Qv5lSNQAsWdbAKtq8O3kq5cESVQ3MUk0K/XQ5b1lR+8+344CsUZo+8kvezf3HhdZiJQnGEPCmlWx6D9LtTvGJRAcc7oLH676s7ir/7qB4HiLlLXQQkU5wgU0ggU0rQCpVCcIVBII1BII1BII1BII1BII1BII1BII1BIEwuUQnGKQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCFNLVAKxQmjQNeP783nc1U9vPkOR6AYsgm07fPX28lNcO4cjkAxZHRvpuUu0oV70+/WN57rQfnMbh7W35/J7+ZhnutB+Yxe4he7fefCvcUeFFFsAt2uHt/bXejm2lkSgeIuVpeZNt3NwxbewxEohuSug1IohggU0qwD9Z9pjkAxMPIe9PZMcwlXhELwEg9pBAppRoGGzTQXsCIUzibQwJnm/FeE0pkEGjxP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" /><!-- --></p>
+<p><img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAAb1BMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6AGY6Ojo6OpA6ZmY6kNtmAABmADpmOpBmtrZmtttmtv+QOgCQOmaQZgCQkGaQ2/+2ZgC2tv+225C2/7a2///bkDrb2//b/7bb////tmb/25D//7b//9v////3LCvfAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAPw0lEQVR4nO3dDVvqyB2H4ah4ti20W20r7ZpWxHz/z1gmCRBAkHn5J7+ZPPd17R71hEnkPIYkaqZqAGHV1BsA3EKgkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkEagkJY40Aq4i0Wg29XTR8LhMGNGgf7leZluOMyYUaDLpq4WqYbDjJkF2jSb6kajBIq7GAbatI0+vkcPhxmzDTTNcJgxAoU0k0DHHw6lIlBIsw605iQJMUbeg97+DhbV4pzUSzyB4hyBQppRoF+v3Qv5lSNQAsWdbAKtq8O3kq5cESVQ3MUk0K/XQ5b1lR+8+344CsUZo+8kvezf3HhdZiJQnGEPCmlWx6D9LtTvGJRAcc7oLH676s7ir/7qB4HiLlLXQQkU5wgU0ggU0rQCpVCcIVBII1BII1BII1BII1BII1BII1BII1BIEwuUQnGKQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCFNLVAKxQmjQNeP783nc1U9vPkOR6AYsgm07fPX28lNcO4cjkAxZHRvpuUu0oV70+/WN57rQfnMbh7W35/J7+ZhnutB+Yxe4he7fefCvcUeFFFsAt2uHt/bXejm2lkSgeIuVpeZNt3NwxbewxEohuSug1IohggU0qwD9Z9pjkAxMPIe9PZMcwlXhELwEg9pBAppRoGGzTQXsCIUzibQwJnm/FeE0pkEGjxP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" /><!-- --></p>
+</div>
+<div id="extreme-value-estimators" class="section level2">
+<h2>Extreme-value estimators</h2>
+<p><code>ole()</code> is the first of a family of estimators that treat
+the latest sightings as the upper order statistics of the sighting-time
+distribution, whose endpoint is the extinction time. EDE adds
+<code>hall_wang1999()</code>, <code>fraga_alves_neves2014()</code>,
+<code>dekkers1989()</code> and <code>smith1985()</code>, the choice of
+the number of sightings with <code>ede_select_k()</code>, a test of
+whether the endpoint is finite (<code>ede_endpoint_test()</code>), and
+checks of the sighting model (<code>vogel2009()</code>,
+<code>ede_field_test()</code>). They are described in
+<code>vignette(&quot;extreme-value-methods&quot;)</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">hall_wang1999</span>(sd, <span class="at">k =</span> <span class="dv">8</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; Warning: the upper confidence limit does not exist at this alpha and record;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; returning Inf.</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; &lt;Hall &amp; Wang (1999)&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt;   estimate: 1938.06</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;   95% CI: [1936, Inf]</span></span></code></pre></div>
+<p>The effect of the sighting model on all of these methods is
+quantified in <code>vignette(&quot;choosing-a-method&quot;)</code>.</p>
 </div>
 <div id="a-bayesian-view" class="section level2">
 <h2>A Bayesian view</h2>
@@ -461,10 +488,10 @@ noninformative prior on the sighting rate. Combined with a prior
 probability of persistence, it gives the posterior probability that the
 species is extant, which is the quantity the p-values above do not
 provide.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">solow1993_bayes</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>, <span class="at">prior =</span> <span class="fl">0.5</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; &lt;Solow (1993a) Bayes factor&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;   Bayes factor for persistence to 2000: 7.525e-14</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;   posterior probability of persistence (prior 0.5): 7.525e-14</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">solow1993_bayes</span>(sd, <span class="at">test_year =</span> <span class="dv">2000</span>, <span class="at">prior =</span> <span class="fl">0.5</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; &lt;Solow (1993a) Bayes factor&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;   Bayes factor for persistence to 2000: 7.525e-14</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;   posterior probability of persistence (prior 0.5): 7.525e-14</span></span></code></pre></div>
 </div>
 <div id="uncertain-sightings" class="section level2">
 <h2>Uncertain sightings</h2>
@@ -473,18 +500,18 @@ every sighting. EDE requires binary counts because reliability belongs
 to individual records; this is a package restriction, not one of the
 source paper. A sighting at the observation origin fixes the origin and
 its reliability is not used.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>uncertain <span class="ot">&lt;-</span> <span class="fu">sighting_data</span>(<span class="fu">data.frame</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">c</span>(<span class="dv">1900</span>, <span class="dv">1910</span>, <span class="dv">1920</span>, <span class="dv">1930</span>),</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">sightings =</span> <span class="dv">1</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>))</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="fu">jaric_roberts2014</span>(</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  uncertain,</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">reliability =</span> <span class="fu">c</span>(<span class="fl">1.0</span>, <span class="fl">0.9</span>, <span class="fl">0.6</span>, <span class="fl">0.3</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>)</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; &lt;Jaric &amp; Roberts (2014)&gt;</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;   estimate: 1930.99</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;   95% upper confidence bound: 2005.22</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>uncertain <span class="ot">&lt;-</span> <span class="fu">sighting_data</span>(<span class="fu">data.frame</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">c</span>(<span class="dv">1900</span>, <span class="dv">1910</span>, <span class="dv">1920</span>, <span class="dv">1930</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">sightings =</span> <span class="dv">1</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>))</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="fu">jaric_roberts2014</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  uncertain,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">reliability =</span> <span class="fu">c</span>(<span class="fl">1.0</span>, <span class="fl">0.9</span>, <span class="fl">0.6</span>, <span class="fl">0.3</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; &lt;Jaric &amp; Roberts (2014)&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;   estimate: 1930.99</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;   95% upper confidence bound: 2005.22</span></span></code></pre></div>
 <p>The result includes the effective number of sightings and the
 reliability-adjusted endpoint as additional components. Supply
 <code>test_year</code> to add the reliability-adjusted p-value of
@@ -512,11 +539,11 @@ number of consecutive absent surveys after which declaring eradication
 minimises the expected cost. <code>caley_barry2014()</code> models
 yearly detections with constant detection and extinction probabilities;
 its posterior is computed exactly:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>fox <span class="ot">&lt;-</span> <span class="fu">sighting_data</span>(<span class="fu">data.frame</span>(<span class="at">year =</span> <span class="fu">c</span>(<span class="dv">2001</span>, <span class="dv">2003</span>, <span class="dv">2005</span>, <span class="dv">2006</span>), <span class="at">count =</span> <span class="dv">1</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">caley_barry2014</span>(fox, <span class="at">test_year =</span> <span class="dv">2012</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; &lt;Caley &amp; Barry (2014) constant model (published)&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;   Bayes factor for persistence to 2012: 0.9147</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;   posterior probability of persistence (prior 0.0680721): 0.06263</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>fox <span class="ot">&lt;-</span> <span class="fu">sighting_data</span>(<span class="fu">data.frame</span>(<span class="at">year =</span> <span class="fu">c</span>(<span class="dv">2001</span>, <span class="dv">2003</span>, <span class="dv">2005</span>, <span class="dv">2006</span>), <span class="at">count =</span> <span class="dv">1</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">caley_barry2014</span>(fox, <span class="at">test_year =</span> <span class="dv">2012</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; &lt;Caley &amp; Barry (2014) constant model (published)&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;   Bayes factor for persistence to 2012: 0.9147</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;   posterior probability of persistence (prior 0.0680721): 0.06263</span></span></code></pre></div>
 </div>
 <div id="records-and-surveys" class="section level2">
 <h2>Records and surveys</h2>
@@ -549,46 +576,65 @@ first appearances as negative stratigraphic positions.</p>
 <h2>Comparing methods</h2>
 <p><code>ede_compare()</code> applies every method that needs only the
 sighting record:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">ede_compare</span>(<span class="fu">sighting_data</span>(monk_seal), <span class="at">test_year =</span> <span class="dv">2050</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt;                                          method     function_name estimate</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; 1                    OLE (Roberts &amp; Solow 2003)               ole 1963.528</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; 2                      Robson &amp; Whitlock (1964)        robson1964 1956.000</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; 3                       Strauss &amp; Sadler (1989)       strauss1989 1961.250</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; 4                                 Solow (1993a)         solow1993       NA</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 5                                 Solow (1993b)        solow1993b 1957.605</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; 6                     Solow (2005) Weibull test         solow2005       NA</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; 7        McInerny, Roberts, Davy &amp; Cribb (2006)      mcinerny2006       NA</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; 8  Burgman, Grimson &amp; Ferson (1995), equation 2       burgman1995       NA</span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; 9                        Solow &amp; Roberts (2003) solow_roberts2003       NA</span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; 10                      Jaric &amp; Ebenhard (2010)         jaric2010       NA</span></span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;      lower    upper interval_type</span></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; 1  1952.67 2093.799     two-sided</span></span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; 2  1952.00 2028.000     one-sided</span></span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; 3  1952.00 1993.245     one-sided</span></span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; 4       NA 1993.245     one-sided</span></span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; 5       NA       NA     one-sided</span></span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt; 6       NA 2029.444     one-sided</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; 7       NA 1979.000     one-sided</span></span>
-<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="co">#&gt; 8       NA 1994.000     one-sided</span></span>
-<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co">#&gt; 9       NA 2028.000     one-sided</span></span>
-<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="co">#&gt; 10      NA       NA     one-sided</span></span>
-<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a><span class="co">#&gt;                                                              note</span></span>
-<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="co">#&gt; 1                                                                </span></span>
-<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="co">#&gt; 2                                                                </span></span>
-<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a><span class="co">#&gt; 3                                                                </span></span>
-<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a><span class="co">#&gt; 4                                                                </span></span>
-<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a><span class="co">#&gt; 5  p-value never falls to alpha before `test_year`; returning NA.</span></span>
-<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a><span class="co">#&gt; 6                                                                </span></span>
-<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a><span class="co">#&gt; 7                                                                </span></span>
-<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a><span class="co">#&gt; 8                                                                </span></span>
-<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a><span class="co">#&gt; 9                                                                </span></span>
-<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a><span class="co">#&gt; 10 p-value never falls to alpha before `test_year`; returning NA.</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>cmp <span class="ot">&lt;-</span> <span class="fu">ede_compare</span>(<span class="fu">sighting_data</span>(monk_seal), <span class="at">test_year =</span> <span class="dv">2050</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>cmp</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt;                                          method         function_name estimate</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; 1                    OLE (Roberts &amp; Solow 2003)                   ole 1963.528</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; 2                      Robson &amp; Whitlock (1964)            robson1964 1956.000</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; 3                       Strauss &amp; Sadler (1989)           strauss1989 1961.250</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; 4                                 Solow (1993a)             solow1993       NA</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; 5                                 Solow (1993b)            solow1993b 1957.605</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; 6                     Solow (2005) Weibull test             solow2005       NA</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; 7        McInerny, Roberts, Davy &amp; Cribb (2006)          mcinerny2006       NA</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; 8  Burgman, Grimson &amp; Ferson (1995), equation 2           burgman1995       NA</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; 9                        Solow &amp; Roberts (2003)     solow_roberts2003       NA</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; 10                      Jaric &amp; Ebenhard (2010)             jaric2010       NA</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; 11                           Hall &amp; Wang (1999)         hall_wang1999 1952.630</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 12                   Fraga Alves &amp; Neves (2014) fraga_alves_neves2014 1956.150</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;      lower    upper interval_type</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; 1  1952.67 2093.799     two-sided</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 2  1952.00 2028.000     one-sided</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; 3  1952.00 1993.245     one-sided</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 4       NA 1993.245     one-sided</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 5       NA       NA     one-sided</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 6       NA 2029.444     one-sided</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 7       NA 1979.000     one-sided</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; 8       NA 1994.000     one-sided</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; 9       NA 2028.000     one-sided</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; 10      NA       NA     one-sided</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; 11 1952.00      Inf     two-sided</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="co">#&gt; 12      NA       NA     two-sided</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a><span class="co">#&gt;                                                                                  note</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a><span class="co">#&gt; 1                                                                                    </span></span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a><span class="co">#&gt; 2                                                                                    </span></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a><span class="co">#&gt; 3                                                                                    </span></span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a><span class="co">#&gt; 4                                                                                    </span></span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a><span class="co">#&gt; 5                      p-value never falls to alpha before `test_year`; returning NA.</span></span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a><span class="co">#&gt; 6                                                                                    </span></span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a><span class="co">#&gt; 7                                                                                    </span></span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a><span class="co">#&gt; 8                                                                                    </span></span>
+<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a><span class="co">#&gt; 9                                                                                    </span></span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a><span class="co">#&gt; 10                     p-value never falls to alpha before `test_year`; returning NA.</span></span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a><span class="co">#&gt; 11 the upper confidence limit does not exist at this alpha and record; returning Inf.</span></span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a><span class="co">#&gt; 12</span></span></code></pre></div>
+<p><code>plot(cmp)</code> draws the estimates, intervals and upper
+bounds as a forest plot.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">plot</span>(cmp)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
 </div>
 <div id="choosing-a-method" class="section level2">
 <h2>Choosing a method</h2>
 <ul>
-<li>Use OLE when the recent record is sufficiently long and an
-extreme-value model is defensible.</li>
+<li>Use <code>hall_wang1999()</code> when an extreme-value model is
+defensible: its interval is exact, and an infinite upper limit is
+informative, not a failure. <code>ole()</code> fits the same model but
+under-covers in simulation, most of all with many sightings; limit it
+with <code>ede_select_k()</code>. <code>fraga_alves_neves2014()</code>
+covers the Gumbel domain.</li>
+<li>Use <code>robson1964()</code> for a bound that keeps its coverage
+whatever the shape of the sighting rate, accepting that it is wide.</li>
+<li>Use <code>mccarthy1998()</code> when sighting effort varied and can
+be quantified.</li>
 <li>Use <code>solow1993()</code> only when a constant sighting rate is
 plausible.</li>
 <li>Use <code>solow1993b()</code> for an approximately exponential
@@ -609,13 +655,23 @@ species is extant is needed; report the prior alongside it.</li>
 <p>Running several scientifically defensible methods is useful, but
 p-values from models whose assumptions are violated should not be
 combined or interpreted as extinction probabilities.</p>
+<p>The assumptions of each method, and a simulation study of their
+coverage and bias under constant, declining and varying sighting rates,
+are in <code>vignette(&quot;choosing-a-method&quot;)</code>. In short, the
+constant-rate tests are calibrated only when the rate is constant,
+<code>robson1964()</code> keeps its coverage under every scenario
+simulated but gives wide bounds, and the extreme-value estimators have
+bounded intervals only when the record carries strong evidence of a
+finite endpoint.</p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
 <p>References for the methods introduced after the core estimators (Rout
 et al. 2009; Thompson et al. 2013, 2017, 2019; Caley &amp; Barry 2014;
-Brook et al. 2019; Marshall 1994, 1997; Weiss &amp; Marshall 1999) are
-given on the help page of each function.</p>
+Brook et al. 2019; Marshall 1994, 1997; Weiss &amp; Marshall 1999;
+McCarthy 1998) are given on the help page of each function; those of the
+extreme-value methods are in
+<code>vignette(&quot;extreme-value-methods&quot;)</code>.</p>
 <p>Burgman, M. A., Grimson, R. C., &amp; Ferson, S. (1995). Inferring
 threat from scientific collections. <em>Conservation Biology</em>, 9(4),
 923-928.</p>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Extreme-value methods for sighting records</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Extreme-value methods for sighting
+records</h1>
+
+
+
+<div id="the-model" class="section level2">
+<h2>The model</h2>
+<p>Let <span class="math inline">\(t_1 &lt; \dots &lt; t_n\)</span> be
+the sighting times of a species that went extinct at an unknown time
+<span class="math inline">\(\tau\)</span>. If the sighting times are
+independent draws from a distribution <span class="math inline">\(F\)</span> on <span class="math inline">\((0,
+\tau)\)</span>, the extinction time is the upper endpoint of <span class="math inline">\(F\)</span>, and the latest sightings are the upper
+order statistics of the sample. Extreme-value theory then describes how
+they behave (Robson &amp; Whitlock 1964; Cooke 1980; Roberts &amp; Solow
+2003).</p>
+<p>A distribution with a finite endpoint belongs to the Weibull domain
+of attraction, with extreme-value index <span class="math inline">\(\xi
+&lt; 0\)</span>. If the density behaves as <span class="math inline">\((\tau - t)^{a-1}\)</span> near <span class="math inline">\(\tau\)</span>, then <span class="math inline">\(\xi = -1/a\)</span>: a constant sighting rate has
+<span class="math inline">\(a = 1\)</span> (<span class="math inline">\(\xi = -1\)</span>) and a rate falling linearly to
+zero has <span class="math inline">\(a = 2\)</span> (<span class="math inline">\(\xi = -1/2\)</span>). The Gumbel domain (<span class="math inline">\(\xi = 0\)</span>) contains distributions whose
+tail is exponential, with an infinite endpoint or, in particular cases,
+a finite one; the Fréchet domain (<span class="math inline">\(\xi &gt;
+0\)</span>) has an infinite endpoint. Only <span class="math inline">\(\xi \le 0\)</span> is compatible with extinction
+at a finite time.</p>
+<p>The functions in this article treat the <span class="math inline">\(k\)</span> latest sightings in that way. They are
+transpositions to sighting records of procedures designed for the upper
+tail of a sample; <code>ole()</code> (Roberts &amp; Solow 2003) is the
+only one of them introduced in the sighting-record literature. Each
+function states in its help page which assumptions the transposition
+adds.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(EDE)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1900</span>, <span class="dv">1902</span>, <span class="dv">1903</span>, <span class="dv">1905</span>, <span class="dv">1907</span>, <span class="dv">1908</span>, <span class="dv">1910</span>, <span class="dv">1912</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>           <span class="dv">1915</span>, <span class="dv">1918</span>, <span class="dv">1920</span>, <span class="dv">1923</span>, <span class="dv">1925</span>, <span class="dv">1928</span>, <span class="dv">1930</span>, <span class="dv">1933</span>, <span class="dv">1936</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="fu">sighting_data</span>(<span class="fu">data.frame</span>(<span class="at">year =</span> years, <span class="at">sightings =</span> counts))</span></code></pre></div>
+</div>
+<div id="endpoint-estimators" class="section level2">
+<h2>Endpoint estimators</h2>
+<p><code>ole()</code> fits the Weibull model by the optimal linear
+estimator of Cooke (1980) and reports the two-sided interval of Roberts
+&amp; Solow (2003). By default it uses every sighting event.</p>
+<p><code>hall_wang1999()</code> estimates the endpoint by minimising
+Greenwood’s statistic of the log-spacings (Hall &amp; Wang 1999). The
+criterion does not involve the extremal exponent, so the estimator
+exists more often than the maximum likelihood estimator when few
+sightings are used, and its confidence interval is exact under the
+model. The null distribution of Greenwood’s statistic has no closed
+form; EDE simulates it, and the simulated quantiles agree to three
+decimals with the exact points that Burrows (1979) computed for 10
+spacings, as quoted by Stephens (1981). By default
+<code>hall_wang1999()</code> uses the 10 latest distinct sightings.</p>
+<p><code>fraga_alves_neves2014()</code> is a closed-form estimator for
+the Gumbel domain with a finite endpoint (Fraga Alves &amp; Neves 2014).
+It is never earlier than the last sighting and returns no interval.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">ole</span>(sd)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; &lt;OLE (Roberts &amp; Solow 2003)&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;   estimate: 1941.97</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;   95% CI: [1937.48, 1956.75]</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">hall_wang1999</span>(sd, <span class="at">k =</span> <span class="dv">8</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Warning: the upper confidence limit does not exist at this alpha and record;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; returning Inf.</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; &lt;Hall &amp; Wang (1999)&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;   estimate: 1938.06</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;   95% CI: [1936, Inf]</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="fu">fraga_alves_neves2014</span>(sd)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; &lt;Fraga Alves &amp; Neves (2014)&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;   estimate: 1942.42</span></span></code></pre></div>
+<p>The upper limit of the Hall-Wang interval is often infinite, which
+says that the <span class="math inline">\(k\)</span> sightings do not
+exclude an infinite endpoint. That is the correct answer when the
+evidence for a finite endpoint is weak, and the share of records for
+which it occurs is quantified in
+<code>vignette(&quot;choosing-a-method&quot;)</code>.</p>
+</div>
+<div id="choosing-k" class="section level2">
+<h2>Choosing <span class="math inline">\(k\)</span></h2>
+<p>All of these estimators depend on <span class="math inline">\(k\)</span>. <code>ede_select_k()</code> chooses it
+with the sequential procedure of G’Sell et al. (2016), applied as in
+Bader, Yan &amp; Zhang (2018): Weibull goodness-of-fit tests are run
+from the largest to the smallest <span class="math inline">\(k\)</span>,
+and the ForwardStop rule controls the false discovery rate. The
+adaptation to sighting records is a construct of this package. The
+procedure is random, so set a seed.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">ede_select_k</span>(sd, <span class="at">nsim =</span> <span class="dv">199</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>sel</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; &lt;Ordered goodness-of-fit selection of k&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;   selected k: 17  (ForwardStop, FDR 0.1)</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   k statistic shape p_value estimable rejected</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;  17    0.0666  1.25   1.000      TRUE    FALSE</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;  16    0.0713  1.26   1.000      TRUE    FALSE</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  15    0.0753  1.20   1.000      TRUE    FALSE</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;  14    0.0813  1.19   1.000      TRUE    FALSE</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;  13    0.0885  1.18   1.000      TRUE    FALSE</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;  12    0.0941  1.11   1.000      TRUE    FALSE</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;  11    0.1035  1.08   1.000      TRUE    FALSE</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;  10    0.1147  1.04   1.000      TRUE    FALSE</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;   9    0.1292  1.08   1.000      TRUE    FALSE</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;   8    0.1474  1.15   1.000      TRUE    FALSE</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;   7    0.1718  1.09   1.000      TRUE    FALSE</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;   6    0.2054  1.22   0.995      TRUE    FALSE</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;   5    0.2560  1.11   0.970      TRUE    FALSE</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;   4    0.3382  1.49   0.890      TRUE    FALSE</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="fu">hall_wang1999</span>(sd, <span class="at">k =</span> sel<span class="sc">$</span>k)</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; Warning: the upper confidence limit does not exist at this alpha and record;</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; returning Inf.</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; &lt;Hall &amp; Wang (1999)&gt;</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt;   estimate: 1938.42</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt;   95% CI: [1936, Inf]</span></span></code></pre></div>
+</div>
+<div id="is-the-endpoint-finite" class="section level2">
+<h2>Is the endpoint finite?</h2>
+<p><code>ede_endpoint_test()</code> tests the Gumbel domain, with an
+exponential tail and no sharp endpoint, against the Weibull domain,
+using the statistic of Neves, Picek &amp; Fraga Alves (2006) and that of
+Hasofer &amp; Wang (1992). Both reduce, under an exponential tail, to
+functions of <span class="math inline">\(k\)</span> independent
+exponential excesses, so EDE reports exact <span class="math inline">\(p\)</span>-values (Fisher’s <span class="math inline">\(g\)</span> for the first, Greenwood’s distribution
+for the second) next to the asymptotic approximation of the original
+paper, which is very conservative for small <span class="math inline">\(k\)</span>. A small <span class="math inline">\(p\)</span>-value supports a finite endpoint; a
+large one is inconclusive when <span class="math inline">\(k\)</span> is
+small, because the tests have little power.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">ede_endpoint_test</span>(sd, <span class="at">k =</span> <span class="dv">8</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; &lt;Test of the Gumbel domain of attraction&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;   alternative: finite end-point (Weibull domain)</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;   k = 8 latest sightings, 17 sighting times</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;                               test k statistic p_value p_asymptotic</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  Neves, Picek &amp; Fraga Alves (2006) 8   -0.2730 0.06362       0.2688</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;              Hasofer &amp; Wang (1992) 8    0.3082 0.08557           NA</span></span></code></pre></div>
+</div>
+<div id="the-extreme-value-index" class="section level2">
+<h2>The extreme-value index</h2>
+<p><code>dekkers1989()</code> estimates <span class="math inline">\(\xi\)</span> with the moment estimator of Dekkers,
+Einmahl &amp; de Haan (1989), and derives an endpoint estimate from it.
+It is defined only when the estimated index is negative. The estimator
+works on the logarithms of the exceedances, so it depends on the origin
+of the time axis, which by default is the start of the record, and with
+few sightings it is noisy. <code>ede_evi()</code> repeats it over a
+range of <span class="math inline">\(k\)</span>, the usual stability
+diagram.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">ede_evi</span>(sd))</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p><code>smith1985()</code> fits the same model by maximum likelihood
+(Smith 1985). The likelihood is unbounded at the last sighting, so the
+estimator is an interior local maximum, and the usual asymptotics hold
+only when <span class="math inline">\(a &gt; 2\)</span> (<span class="math inline">\(\xi &gt; -1/2\)</span>). A constant sighting rate
+has <span class="math inline">\(a = 1\)</span>, outside that range, and
+in simulation the interior maximum exists in a small share of records;
+for sighting records <code>hall_wang1999()</code> is the better
+default.</p>
+</div>
+<div id="checking-the-model" class="section level2">
+<h2>Checking the model</h2>
+<p><code>vogel2009()</code> tests whether sighting times are uniformly
+distributed over the record, the null hypothesis of the constant-rate
+methods, with the probability-plot correlation coefficient of Vogel et
+al. (2009). The null distribution is obtained by simulation. When many
+species are tested, <code>ede_field_test()</code> combines the <span class="math inline">\(p\)</span>-values with Bonferroni,
+Benjamini-Hochberg, binomial and probability-plot-correlation rules for
+field significance.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">vogel2009</span>(sd, <span class="at">nsim =</span> <span class="dv">2000</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;  PPCC test of uniform sighting times (Vogel et al. 2009)</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; data:  sd</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; r = 0.99495, n = 17, p-value = 0.9785</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; alternative hypothesis: less</span></span></code></pre></div>
+<p><code>mccarthy1998()</code> adjusts the Solow (1993a) test for
+sighting effort that varies over time, supplied as a vector with one
+value per time unit from the origin, or as a function of time (McCarthy
+1998). The probability that all sightings fall before <span class="math inline">\(t_n\)</span> is computed with cumulative effort
+instead of elapsed time.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>effort <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">50</span>), <span class="fu">rep</span>(<span class="fl">0.5</span>, <span class="dv">51</span>))          <span class="co"># 1900-2000, effort halves after 1950</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">mccarthy1998</span>(sd, <span class="at">effort =</span> effort, <span class="at">test_year =</span> <span class="dv">2000</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; &lt;McCarthy (1998)&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;   95% upper confidence bound: 1940</span></span></code></pre></div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Bader, B., Yan, J., &amp; Zhang, X. (2018). Automated threshold
+selection for extreme value analysis via ordered goodness-of-fit tests
+with adjustment for false discovery rate. <em>Annals of Applied
+Statistics</em>, 12, 310-329.</p>
+<p>Cooke, P. (1980). Optimal linear estimation of bounds of random
+variables. <em>Biometrika</em>, 67, 257-258.</p>
+<p>Dekkers, A. L. M., Einmahl, J. H. J., &amp; de Haan, L. (1989). A
+moment estimator for the index of an extreme-value distribution.
+<em>Annals of Statistics</em>, 17, 1833-1855.</p>
+<p>Fraga Alves, I., &amp; Neves, C. (2014). Estimation of the finite
+right endpoint in the Gumbel domain. <em>Statistica Sinica</em>, 24,
+1811-1835.</p>
+<p>G’Sell, M. G., Wager, S., Chouldechova, A., &amp; Tibshirani, R.
+(2016). Sequential selection procedures and false discovery rate
+control. <em>Journal of the Royal Statistical Society B</em>, 78,
+423-444.</p>
+<p>Hall, P., &amp; Wang, J. Z. (1999). Estimating the end-point of a
+probability distribution using minimum-distance methods.
+<em>Bernoulli</em>, 5, 177-189.</p>
+<p>Hasofer, A. M., &amp; Wang, Z. (1992). A test for extreme value
+domain of attraction. <em>Journal of the American Statistical
+Association</em>, 87, 171-177.</p>
+<p>McCarthy, M. A. (1998). Identifying declining and threatened species
+with museum data. <em>Biological Conservation</em>, 83, 9-17.</p>
+<p>Neves, C., Picek, J., &amp; Fraga Alves, M. I. (2006). The
+contribution of the maximum to the sum of excesses for testing
+max-domains of attraction. <em>Journal of Statistical Planning and
+Inference</em>, 136, 1281-1301.</p>
+<p>Roberts, D. L., &amp; Solow, A. R. (2003). Flightless birds: When did
+the dodo become extinct? <em>Nature</em>, 426, 245.</p>
+<p>Robson, D. S., &amp; Whitlock, J. H. (1964). Estimation of a
+truncation point. <em>Biometrika</em>, 51, 33-39.</p>
+<p>Smith, R. L. (1985). Maximum likelihood estimation in a class of
+nonregular cases. <em>Biometrika</em>, 72, 67-90.</p>
+<p>Solow, A. R. (1993a). Inferring extinction from sighting data.
+<em>Ecology</em>, 74, 962-964.</p>
+<p>Stephens, M. A. (1981). Further percentage points for Greenwood’s
+statistic. <em>Journal of the Royal Statistical Society A</em>, 144,
+364-366.</p>
+<p>Vogel, R. M., Hosking, J. R. M., Elphick, C. S., Roberts, D. L.,
+&amp; Reed, J. M. (2009). Goodness of fit of probability distributions
+for sightings as species approach extinction. <em>Bulletin of
+Mathematical Biology</em>, 71, 701-719.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

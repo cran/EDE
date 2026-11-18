@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Choosing a method: assumptions and simulation evidence</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Choosing a method: assumptions and
+simulation evidence</h1>
+
+
+
+<p>The methods in EDE answer related but different questions, and each
+is valid only under its own model of how sightings arise. This article
+states those models, reports a simulation study of the estimators that
+return an interval for the extinction time, and ends with a decision
+guide. For an introduction to the interface see
+<code>vignette(&quot;EDE&quot;)</code>.</p>
+<div id="two-families-of-method" class="section level2">
+<h2>Two families of method</h2>
+<p>Let <span class="math inline">\(t_1 &lt; \dots &lt; t_n\)</span> be
+the times of the sightings, <span class="math inline">\(T\)</span> the
+end of the observation period and <span class="math inline">\(\tau\)</span> the unknown extinction time.</p>
+<p><strong>Persistence tests</strong> treat <span class="math inline">\(\tau\)</span> as a hypothesis. They compute, for a
+candidate time <span class="math inline">\(s \ge t_n\)</span>, a <span class="math inline">\(p\)</span>-value for the null hypothesis that the
+species is still extant at <span class="math inline">\(s\)</span>, under
+a model of the sighting rate. Inverting the test gives a one-sided upper
+confidence bound for <span class="math inline">\(\tau\)</span>. They do
+not estimate <span class="math inline">\(\tau\)</span>.</p>
+<p><strong>Endpoint estimators</strong> treat <span class="math inline">\(\tau\)</span> as the finite upper endpoint of the
+distribution of sighting times. The last sightings are then the upper
+order statistics of that distribution, and extreme-value theory applies
+(Robson &amp; Whitlock 1964; Cooke 1980; Roberts &amp; Solow 2003). A
+finite endpoint corresponds to the Weibull domain of attraction, with
+extreme-value index <span class="math inline">\(\xi &lt; 0\)</span>. The
+index is tied to how fast the sighting rate vanishes at <span class="math inline">\(\tau\)</span>: a density proportional to <span class="math inline">\((\tau - t)^{a-1}\)</span> gives <span class="math inline">\(\xi = -1/a\)</span>, so a constant rate is <span class="math inline">\(a = 1\)</span> (<span class="math inline">\(\xi =
+-1\)</span>) and a rate falling linearly to zero is <span class="math inline">\(a = 2\)</span> (<span class="math inline">\(\xi =
+-1/2\)</span>).</p>
+</div>
+<div id="assumptions-of-each-method" class="section level2">
+<h2>Assumptions of each method</h2>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Model for the sighting process</th>
+<th>Needs</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>solow1993()</code></td>
+<td>Homogeneous Poisson process</td>
+<td>origin, every sighting event</td>
+<td>upper bound</td>
+</tr>
+<tr class="even">
+<td><code>solow1993b()</code></td>
+<td>Poisson process with an exponentially declining rate</td>
+<td>origin, every sighting event</td>
+<td>upper bound (may not exist)</td>
+</tr>
+<tr class="odd">
+<td><code>burgman1995()</code></td>
+<td>Equal periods; exact tests on the final (eq. 2) or the longest (eq.
+4) run of empty periods</td>
+<td>origin, every sighting event</td>
+<td>upper bound</td>
+</tr>
+<tr class="even">
+<td><code>mcinerny2006()</code></td>
+<td>Binary time units; sighting rate fixed at its value up to the last
+sighting</td>
+<td>origin, binary time units</td>
+<td>upper bound</td>
+</tr>
+<tr class="odd">
+<td><code>jaric2010()</code></td>
+<td>Average interval between sightings, optional trend; an index, not a
+fitted model</td>
+<td>distinct times</td>
+<td>index, upper bound</td>
+</tr>
+<tr class="even">
+<td><code>solow_roberts2003()</code></td>
+<td>Nonparametric; uses only the two latest distinct sightings</td>
+<td>distinct times</td>
+<td>upper bound</td>
+</tr>
+<tr class="odd">
+<td><code>robson1964()</code></td>
+<td>Exact for uniform sighting times; Quenouille bias reduction</td>
+<td>distinct times</td>
+<td>estimate, upper bound</td>
+</tr>
+<tr class="even">
+<td><code>strauss1989()</code></td>
+<td>Uniform sighting times between the true endpoints</td>
+<td>distinct times</td>
+<td>estimate, upper bound</td>
+</tr>
+<tr class="odd">
+<td><code>ole()</code></td>
+<td>Weibull domain, <span class="math inline">\(k\)</span> latest
+events</td>
+<td>every sighting event, <span class="math inline">\(k\)</span></td>
+<td>estimate, two-sided interval</td>
+</tr>
+<tr class="even">
+<td><code>hall_wang1999()</code></td>
+<td>Weibull domain, <span class="math inline">\(k\)</span> latest
+sightings</td>
+<td>distinct times, <span class="math inline">\(k\)</span></td>
+<td>estimate, exact interval</td>
+</tr>
+<tr class="odd">
+<td><code>fraga_alves_neves2014()</code></td>
+<td>Gumbel domain with a finite endpoint</td>
+<td>distinct times, <span class="math inline">\(k\)</span></td>
+<td>estimate</td>
+</tr>
+<tr class="even">
+<td><code>dekkers1989()</code></td>
+<td>Any domain of attraction; estimates <span class="math inline">\(\xi\)</span></td>
+<td>distinct times, origin, <span class="math inline">\(k\)</span></td>
+<td><span class="math inline">\(\xi\)</span>, endpoint, interval of
+<span class="math inline">\(\xi\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>smith1985()</code></td>
+<td>Weibull domain, regular only for <span class="math inline">\(\xi
+&gt; -1/2\)</span></td>
+<td>distinct times, <span class="math inline">\(k\)</span></td>
+<td>shape, endpoint, profile interval</td>
+</tr>
+<tr class="even">
+<td><code>alroy2014()</code></td>
+<td>Bayesian; prior extinction rate from the length of the observed
+range, sampling probability from the frequency of sightings in it</td>
+<td>binary time units</td>
+<td>posterior probability of extinction per unit, estimate, credible
+limits</td>
+</tr>
+<tr class="odd">
+<td><code>solow2006()</code></td>
+<td>True ages uniform between two endpoints, normal dating error with
+known standard deviation</td>
+<td>dated ages with errors, <span class="math inline">\(k\)</span></td>
+<td>estimate, profile-likelihood interval</td>
+</tr>
+<tr class="even">
+<td><code>bradshaw2012()</code></td>
+<td>Sighting-rate model of <code>mcinerny2006()</code> for each <span class="math inline">\(k\)</span>, inverse-span weights, resampled dating
+errors</td>
+<td>dated ages with errors</td>
+<td>median, quantile interval</td>
+</tr>
+<tr class="odd">
+<td><code>solow1996()</code></td>
+<td>Independent stationary Poisson processes in several taxa; common
+endpoint</td>
+<td>number, lowest and highest find of each taxon</td>
+<td>test, interval</td>
+</tr>
+</tbody>
+</table>
+<p>Distinct times is the default of the extreme-value functions; they
+accept <code>events = TRUE</code> to count each sighting event instead.
+The last four methods need inputs the other methods do not (a binary
+series, dating errors, or several taxa) and are not part of the
+simulation below.</p>
+<p>The sighting-record literature does not contain
+<code>dekkers1989()</code>, <code>smith1985()</code> or
+<code>ede_endpoint_test()</code>. They are transpositions to sighting
+records of methods developed for the upper tail of a sample, as
+documented on their help pages; where the source paper gives a worked
+example they are tested against it. See
+<code>vignette(&quot;extreme-value-methods&quot;)</code> for their use.</p>
+<p>For dated records, such as radiocarbon ages, the dating error can be
+as large as the intervals between the records, and only
+<code>solow2006()</code> and <code>bradshaw2012()</code> take it into
+account (Solow et al. 2006; Bradshaw et al. 2012). Saltré et al. (2015)
+compared eight frequentist methods, among them these two, on simulated
+series and on dated Australian megafauna, and give a selection key based
+on the number of records, the interval between them and the dating
+errors. They report that the methods with the highest precision
+(Marshall 1997; McCarthy 1998) can still misclassify species as extant
+or extinct, and that the method of Bradshaw et al. (2012) was the only
+one with both high accuracy and no misclassification in their tests.
+These are simulation results of the authors for their setting, not
+guarantees: the weights of Bradshaw et al. (2012) are a heuristic, and
+both methods rest on assumptions (uniform true ages for
+<code>solow2006()</code>, a fixed sighting rate for the model behind
+<code>bradshaw2012()</code>) that should be checked, for example with
+<code>solow2006_check()</code>.</p>
+</div>
+<div id="simulation-design" class="section level2">
+<h2>Simulation design</h2>
+<p>The results below were produced by <code>data-raw/simulation.R</code>
+in the package source.</p>
+<p>The true extinction time is <span class="math inline">\(\tau =
+100\)</span> time units. For each scenario, <span class="math inline">\(n\)</span> sighting times are drawn on <span class="math inline">\((0, \tau)\)</span>, rounded up to whole units and
+aggregated into annual counts, the structure of a real record. Every
+method then receives the record and is asked for a <span class="math inline">\(95\%\)</span> upper bound with the test time set
+to <span class="math inline">\(3\tau\)</span>. The record is generated
+as if the species went extinct at <span class="math inline">\(\tau\)</span>, so the quantity of interest is
+whether <span class="math inline">\(\tau\)</span> is covered.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Density of sighting times</th>
+<th><span class="math inline">\(\xi\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>uniform</code></td>
+<td>constant</td>
+<td><span class="math inline">\(-1\)</span> (non-regular)</td>
+</tr>
+<tr class="even">
+<td><code>beta2</code></td>
+<td>proportional to <span class="math inline">\(\tau - t\)</span></td>
+<td><span class="math inline">\(-1/2\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>beta4</code></td>
+<td>proportional to <span class="math inline">\((\tau -
+t)^3\)</span></td>
+<td><span class="math inline">\(-1/4\)</span></td>
+</tr>
+<tr class="even">
+<td><code>eff_dec</code></td>
+<td>effort falling linearly to <span class="math inline">\(20\%\)</span></td>
+<td><span class="math inline">\(-1\)</span> (non-regular)</td>
+</tr>
+<tr class="odd">
+<td><code>eff_inc</code></td>
+<td>effort rising linearly from <span class="math inline">\(20\%\)</span></td>
+<td><span class="math inline">\(-1\)</span> (non-regular)</td>
+</tr>
+</tbody>
+</table>
+<p>Sample sizes are <span class="math inline">\(n = 10, 20, 50\)</span>
+sighting events, with 1000 replicates per scenario. All methods run with
+their default arguments, so <code>hall_wang1999()</code> uses the <span class="math inline">\(k = 10\)</span> latest sightings and
+<code>ole()</code> uses every sighting event. The persistence tests are
+searched up to the test time <span class="math inline">\(3\tau\)</span>;
+a bound that lies beyond it is not returned and counts as a failure.</p>
+<p>Reported are the failure rate, the median bias of the point estimate,
+the coverage of <span class="math inline">\(\tau\)</span> counting
+failures as misses, the share of fits whose upper limit is finite, and
+the median excess of the finite upper limits over <span class="math inline">\(\tau\)</span>. Coverage is the probability that
+the interval contains <span class="math inline">\(\tau\)</span>; an
+unbounded upper limit contains it trivially, which is why the share of
+finite limits is reported next to it. A calibrated <span class="math inline">\(95\%\)</span> interval has coverage near <span class="math inline">\(0.95\)</span>, with Monte Carlo standard error
+about <span class="math inline">\(0.007\)</span> at 1000 replicates.
+<code>fraga_alves_neves2014()</code> and <code>dekkers1989()</code>
+return no interval and are judged on bias only.</p>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p><strong>Coverage of the true extinction time</strong>, <span class="math inline">\(n = 20\)</span> (failures count as misses; the
+table for <span class="math inline">\(n = 10\)</span> and <span class="math inline">\(n = 50\)</span> is in
+<code>inst/extdata/simulation_summary.csv</code>).</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">method</th>
+<th align="right">uniform</th>
+<th align="right">beta2</th>
+<th align="right">beta4</th>
+<th align="right">eff_dec</th>
+<th align="right">eff_inc</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">burgman1995</td>
+<td align="right">0.98</td>
+<td align="right">0.39</td>
+<td align="right">0.01</td>
+<td align="right">0.76</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="even">
+<td align="left">hall_wang1999</td>
+<td align="right">0.95</td>
+<td align="right">0.98</td>
+<td align="right">0.99</td>
+<td align="right">0.95</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="odd">
+<td align="left">jaric2010</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.89</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">mcinerny2006</td>
+<td align="right">0.97</td>
+<td align="right">0.34</td>
+<td align="right">0.01</td>
+<td align="right">0.72</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td align="left">ole</td>
+<td align="right">0.70</td>
+<td align="right">0.77</td>
+<td align="right">0.50</td>
+<td align="right">0.74</td>
+<td align="right">0.57</td>
+</tr>
+<tr class="even">
+<td align="left">robson1964</td>
+<td align="right">1.00</td>
+<td align="right">0.95</td>
+<td align="right">0.84</td>
+<td align="right">0.97</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">smith1985</td>
+<td align="right">0.04</td>
+<td align="right">0.26</td>
+<td align="right">0.43</td>
+<td align="right">0.16</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="even">
+<td align="left">solow_roberts2003</td>
+<td align="right">0.87</td>
+<td align="right">0.60</td>
+<td align="right">0.51</td>
+<td align="right">0.66</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="odd">
+<td align="left">solow1993</td>
+<td align="right">0.97</td>
+<td align="right">0.34</td>
+<td align="right">0.01</td>
+<td align="right">0.73</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="even">
+<td align="left">solow1993b</td>
+<td align="right">0.96</td>
+<td align="right">0.85</td>
+<td align="right">0.86</td>
+<td align="right">0.92</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="odd">
+<td align="left">solow2005</td>
+<td align="right">0.87</td>
+<td align="right">0.76</td>
+<td align="right">0.46</td>
+<td align="right">0.86</td>
+<td align="right">0.80</td>
+</tr>
+<tr class="even">
+<td align="left">strauss1989</td>
+<td align="right">0.98</td>
+<td align="right">0.41</td>
+<td align="right">0.02</td>
+<td align="right">0.77</td>
+<td align="right">0.99</td>
+</tr>
+</tbody>
+</table>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p><strong>Upper limits that exist, and how far they lie above <span class="math inline">\(\tau\)</span></strong>, <span class="math inline">\(n = 20\)</span>:</p>
+<table style="width:100%;">
+<colgroup>
+<col width="19%" />
+<col width="15%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">method</th>
+<th align="right">uniform</th>
+<th align="right">beta2</th>
+<th align="right">beta4</th>
+<th align="right">eff_dec</th>
+<th align="right">eff_inc</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">hall_wang1999</td>
+<td align="right">8% / +71</td>
+<td align="right">4% / +9</td>
+<td align="right">1% / -7</td>
+<td align="right">4% / +34</td>
+<td align="right">11% / +30</td>
+</tr>
+<tr class="even">
+<td align="left">ole</td>
+<td align="right">100% / +21</td>
+<td align="right">100% / +28</td>
+<td align="right">100% / +6</td>
+<td align="right">100% / +35</td>
+<td align="right">100% / +12</td>
+</tr>
+<tr class="odd">
+<td align="left">robson1964</td>
+<td align="right">100% / +75</td>
+<td align="right">100% / +136</td>
+<td align="right">100% / +116</td>
+<td align="right">100% / +124</td>
+<td align="right">100% / +53</td>
+</tr>
+<tr class="even">
+<td align="left">solow1993</td>
+<td align="right">100% / +13</td>
+<td align="right">100% / -4</td>
+<td align="right">100% / -32</td>
+<td align="right">100% / +7</td>
+<td align="right">100% / +13</td>
+</tr>
+<tr class="odd">
+<td align="left">solow1993b</td>
+<td align="right">94% / +14</td>
+<td align="right">44% / +10</td>
+<td align="right">15% / -30</td>
+<td align="right">56% / +22</td>
+<td align="right">100% / +8</td>
+</tr>
+<tr class="even">
+<td align="left">strauss1989</td>
+<td align="right">100% / +14</td>
+<td align="right">100% / -3</td>
+<td align="right">100% / -30</td>
+<td align="right">100% / +9</td>
+<td align="right">100% / +15</td>
+</tr>
+</tbody>
+</table>
+<p>Each cell shows the percentage of replicates with a finite upper
+limit and the median of (upper limit <span class="math inline">\(-\
+\tau\)</span>) among them.</p>
+<p><strong>Point estimates</strong>: median bias, <span class="math inline">\(n = 20\)</span>:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">method</th>
+<th align="right">uniform</th>
+<th align="right">beta2</th>
+<th align="right">beta4</th>
+<th align="right">eff_dec</th>
+<th align="right">eff_inc</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">dekkers1989</td>
+<td align="right">-12.4</td>
+<td align="right">-25.1</td>
+<td align="right">-50.6</td>
+<td align="right">-15.4</td>
+<td align="right">-7.5</td>
+</tr>
+<tr class="even">
+<td align="left">fraga_alves_neves2014</td>
+<td align="right">13.9</td>
+<td align="right">-6.2</td>
+<td align="right">-35.1</td>
+<td align="right">4.7</td>
+<td align="right">15.7</td>
+</tr>
+<tr class="odd">
+<td align="left">hall_wang1999</td>
+<td align="right">-0.9</td>
+<td align="right">-9.8</td>
+<td align="right">-32.6</td>
+<td align="right">-2.1</td>
+<td align="right">-0.5</td>
+</tr>
+<tr class="even">
+<td align="left">ole</td>
+<td align="right">2.8</td>
+<td align="right">-5.3</td>
+<td align="right">-29.7</td>
+<td align="right">3.9</td>
+<td align="right">1.3</td>
+</tr>
+<tr class="odd">
+<td align="left">robson1964</td>
+<td align="right">1.0</td>
+<td align="right">-10.0</td>
+<td align="right">-34.0</td>
+<td align="right">-1.0</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="left">smith1985</td>
+<td align="right">5.0</td>
+<td align="right">-3.1</td>
+<td align="right">-24.0</td>
+<td align="right">3.9</td>
+<td align="right">3.0</td>
+</tr>
+<tr class="odd">
+<td align="left">solow1993b</td>
+<td align="right">1.7</td>
+<td align="right">-9.6</td>
+<td align="right">-32.6</td>
+<td align="right">0.0</td>
+<td align="right">1.1</td>
+</tr>
+<tr class="even">
+<td align="left">strauss1989</td>
+<td align="right">2.3</td>
+<td align="right">-13.3</td>
+<td align="right">-38.5</td>
+<td align="right">-3.0</td>
+<td align="right">3.6</td>
+</tr>
+</tbody>
+</table>
+<div id="what-the-simulation-shows" class="section level3">
+<h3>What the simulation shows</h3>
+<p><strong>The tests are calibrated only under their own model.</strong>
+With a constant sighting rate (<code>uniform</code>),
+<code>solow1993()</code>, <code>solow1993b()</code>,
+<code>burgman1995()</code>, <code>mcinerny2006()</code> and
+<code>strauss1989()</code> have coverage between 0.94 and 0.99 at every
+<span class="math inline">\(n\)</span>, as the theory requires. When the
+rate declines towards extinction (<code>beta2</code>,
+<code>beta4</code>) they stop being calibrated, and more data make it
+worse: for <code>beta2</code>, coverage of <code>solow1993()</code>
+falls from 0.55 at <span class="math inline">\(n = 10\)</span> to 0.16
+at <span class="math inline">\(n = 50\)</span>, and for
+<code>beta4</code> it is 0.05, 0.01 and 0.002. The bound is too early
+because the rate drops near <span class="math inline">\(\tau\)</span>,
+so the final gap looks like absence. Falling sighting effort
+(<code>eff_dec</code>) gives a milder version of the same failure (0.69
+to 0.80 for the constant-rate tests), while rising effort makes them
+conservative. <code>solow1993b()</code>, which allows an exponential
+decline, holds up better (0.71 to 0.92 for <code>beta2</code> and
+<code>beta4</code>), but for those scenarios its bound exists in only
+15% to 44% of replicates at <span class="math inline">\(n =
+20\)</span>.</p>
+<p><strong><code>robson1964()</code> is the most robust bound, at a
+cost.</strong> Its coverage stays between 0.84 and 1.00 in all fifteen
+scenario-size combinations, including the declining-rate scenarios where
+the constant-rate tests fall to 0.61 or less. The price is width: at
+<span class="math inline">\(n = 20\)</span> the median upper limit lies
+53 to 136 time units above <span class="math inline">\(\tau\)</span>,
+against 12 to 15 for the constant-rate tests in the <code>uniform</code>
+scenario, where those are calibrated.</p>
+<p><strong>Hall and Wang’s interval is rarely bounded, and that is
+informative.</strong> Its coverage is 0.93 to 0.99 everywhere, but with
+<span class="math inline">\(k = 10\)</span> the upper limit is finite in
+only 1% to 21% of replicates. In the other fits the data cannot exclude
+an infinite endpoint, which is what an exact interval should report when
+the evidence for a finite endpoint is weak. Its point estimate is nearly
+unbiased when the density is positive at <span class="math inline">\(\tau\)</span> (median bias between <span class="math inline">\(-6.2\)</span> and <span class="math inline">\(0.3\)</span> for <code>uniform</code>,
+<code>eff_dec</code> and <code>eff_inc</code>, shrinking with <span class="math inline">\(n\)</span>) and biased low when the rate vanishes
+at <span class="math inline">\(\tau\)</span> (by 6 to 15 units for
+<code>beta2</code> and 25 to 38 for <code>beta4</code>), where the last
+sightings carry little information about the endpoint. The coverage of
+the bounded intervals alone is not a useful quantity here, because
+conditioning on a finite limit selects the replicates with the earliest
+limits.</p>
+<p><strong><code>ole()</code> under-covers.</strong> Coverage is 0.25 to
+0.83 in all fifteen cells, and it falls with <span class="math inline">\(n\)</span> in the <code>uniform</code>,
+<code>eff_inc</code> and <code>beta4</code> scenarios. By default
+<code>ole()</code> uses every sighting event, and Solow (2005) notes
+that the extreme-value approximation can fail when <span class="math inline">\(k\)</span> is large; the failure rate also rises
+with <span class="math inline">\(n\)</span> (up to 0.34 for
+<code>eff_inc</code>). Choosing <span class="math inline">\(k\)</span>
+with <code>ede_select_k()</code> is advisable. <code>solow2005()</code>
+shares these properties.</p>
+<p><strong>The other extreme-value estimators.</strong>
+<code>fraga_alves_neves2014()</code> is biased high (by up to 20 units)
+in the <code>uniform</code> and <code>eff_inc</code> scenarios and low
+(by up to 44) when the rate vanishes at <span class="math inline">\(\tau\)</span>. <code>dekkers1989()</code>
+underestimates strongly at <span class="math inline">\(n = 10\)</span>
+(median bias <span class="math inline">\(-38\)</span> to <span class="math inline">\(-81\)</span>) and improves with <span class="math inline">\(n\)</span>; it returns no estimate when the moment
+estimate of the index is non-negative (up to 20% of fits).
+<code>smith1985()</code> returns an estimate in only 1% to 43% of fits,
+consistent with its regularity condition (<span class="math inline">\(a
+&gt; 2\)</span>), and is not competitive on sighting records.</p>
+<p><strong>Failures of <code>solow_roberts2003()</code> and
+<code>jaric2010()</code></strong> at small <span class="math inline">\(n\)</span> are bounds beyond the test time: 20% to
+51% of replicates at <span class="math inline">\(n = 10\)</span> for the
+former.</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Cooke, P. (1980). Optimal linear estimation of bounds of random
+variables. <em>Biometrika</em>, 67, 257-258.</p>
+<p>Bradshaw, C. J. A., Cooper, A., Turney, C. S. M., &amp; Brook, B. W.
+(2012). Robust estimates of extinction time in the geological record.
+<em>Quaternary Science Reviews</em>, 33, 14-19.</p>
+<p>Robson, D. S., &amp; Whitlock, J. H. (1964). Estimation of a
+truncation point. <em>Biometrika</em>, 51, 33-39.</p>
+<p>Saltré, F., Brook, B. W., Rodríguez-Rey, M., Cooper, A., Johnson, C.
+N., Turney, C. S. M., &amp; Bradshaw, C. J. A. (2015). Uncertainties in
+dating constrain model choice for inferring extinction time from fossil
+records. <em>Quaternary Science Reviews</em>, 112, 128-137.</p>
+<p>Solow, A. R., Roberts, D. L., &amp; Robbirt, K. M. (2006). On the
+Pleistocene extinctions of Alaskan mammoths and horses. <em>Proceedings
+of the National Academy of Sciences</em>, 103, 7351-7353.</p>
+<p>Roberts, D. L., &amp; Solow, A. R. (2003). Flightless birds: When did
+the dodo become extinct? <em>Nature</em>, 426, 245.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
